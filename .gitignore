@@ -4,4 +4,7 @@ dist/
 data/*.jsonl
 coverage/
 *.log
+*.tmp
+tmp/
+.cache/
 .DS_Store
