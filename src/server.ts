@@ -15,6 +15,25 @@ const app = createApp({
   },
 });
 
-app.listen(config.port, () => {
+const server = app.listen(config.port, () => {
   console.info(`Guardian Integration Gateway listening on port ${config.port}`);
 });
+
+let shuttingDown = false;
+function shutdown(): void {
+  if (shuttingDown) {
+    return;
+  }
+  shuttingDown = true;
+  console.info("Guardian Integration Gateway shutting down");
+  server.close((error) => {
+    if (error) {
+      console.error("Server shutdown encountered an error");
+      process.exitCode = 1;
+    }
+  });
+  setTimeout(() => process.exit(1), 10_000).unref();
+}
+
+process.once("SIGTERM", shutdown);
+process.once("SIGINT", shutdown);
